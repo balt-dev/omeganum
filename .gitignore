@@ -1,2 +1,6 @@
 /target
 OmegaNum.js
+/.vscode
+/.idea
+.gitignore
+Cargo.lock
