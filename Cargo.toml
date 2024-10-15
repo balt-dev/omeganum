@@ -1,6 +1,6 @@
 [package]
 name = "omeganum"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["Naruyoko", "baltdev"]
 description = "Stores numbers up to 10{N}9e15."
@@ -8,7 +8,7 @@ keywords = ["math", "bignum", "no-std", "port"]
 categories = ["no-std"]
 license = "MIT"
 rust-version = "1.81.0"
-documentation = "https://doc.rs/omeganum"
+documentation = "https://docs.rs/omeganum"
 repository = "https://github.com/balt-dev/omeganum"
 
 [dependencies]
