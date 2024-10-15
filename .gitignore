@@ -4,3 +4,6 @@ OmegaNum.js
 /.idea
 .gitignore
 Cargo.lock
+/cov
+*.profraw
+coverage.*

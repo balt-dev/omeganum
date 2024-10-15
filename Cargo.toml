@@ -1,7 +1,12 @@
 [package]
 name = "omeganum"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
+authors = ["Naruyoko", "baltdev"]
+description = "Stores numbers up to 10{N}9e15."
+keywords = ["math", "bignum", "no-std", "port"]
+categories = ["no-std"]
+license = "MIT"
 
 [dependencies]
 num-traits = "0.2"
@@ -14,3 +19,4 @@ std = []
 error_in_core = []
 libm = ["dep:libm", "num-traits/libm"]
 serde = ["dep:serde", "std"]
+f16 = []

@@ -1,15 +1,18 @@
 use crate::OmegaNum;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+/// An error that can occur when parsing an [`OmegaNum`].
 pub enum FromStrError {
+    /// Tried to parse with a radix that isn't base 10. Holds the base that was attempted to be parsed in.
     IncorrectRadix(u32),
-    MalformedInput(usize)
+    /// Encountered malformed input. Holds the index of where the parsing failed.
+    MalformedInput(usize),
 }
 
 #[derive(Copy, Clone)]
 pub struct ParseHead<'s> {
     input: &'s str,
-    index: usize
+    index: usize,
 }
 
 impl<'s> ParseHead<'s> {
@@ -21,7 +24,7 @@ impl<'s> ParseHead<'s> {
         let Some(chr) = self.input.chars().next() else {
             return Err(FromStrError::MalformedInput(self.index));
         };
-        if pattern(&chr) {
+        if !pattern(&chr) {
             return Err(FromStrError::MalformedInput(self.index));
         }
         let len = chr.len_utf8();
@@ -72,29 +75,32 @@ pub fn parse_omeganum(input: &mut ParseHead<'_>) -> Result<OmegaNum, FromStrErro
     }
 
     let is_negative = parse_sign(input)?;
-    
+
     // <num>
     let mut res: OmegaNum = if input.chomp("Infinity").is_ok() {
         OmegaNum::INFINITY
-    } else {'b: {
-        let save = *input;
-        if let Ok(num) = parse_bignum(input) {
-            break 'b OmegaNum::from(num);
+    } else {
+        'b: {
+            let save = *input;
+            if let Ok(num) = parse_bignum(input) {
+                break 'b num;
+            }
+            *input = save;
+            OmegaNum::from(parse_float(input)?)
         }
-        *input = save;
-        OmegaNum::from(parse_float(input)?)
-    }};
+    };
 
     if is_negative {
         res.negate();
     }
 
+    input.assert(str::is_empty)?;
     Ok(res)
 }
 
 fn parse_sign(input: &mut ParseHead<'_>) -> Result<bool, FromStrError> {
     if input.chomp("-").is_ok() {
-        return Ok(true)
+        return Ok(true);
     }
     let _ = input.chomp("+");
     Ok(false)
@@ -105,17 +111,20 @@ fn parse_float(input: &mut ParseHead<'_>) -> Result<f64, FromStrError> {
     let idx = input.index;
     parse_int(input)?;
     if input.chomp(".").is_err() {
-        return start[..input.index - idx].parse()
+        return start[..input.index - idx]
+            .parse()
             .map_err(|_| FromStrError::MalformedInput(input.index));
     }
     parse_int(input)?;
     if input.chomp("e").is_err() && input.chomp("E").is_err() {
-        return start[..input.index - idx].parse()
+        return start[..input.index - idx]
+            .parse()
             .map_err(|_| FromStrError::MalformedInput(input.index));
     }
     parse_sign(input)?;
     parse_int(input)?;
-    start[..input.index - idx].parse()
+    start[..input.index - idx]
+        .parse()
         .map_err(|_| FromStrError::MalformedInput(input.index))
 }
 
@@ -144,19 +153,18 @@ fn parse_operator(input: &mut ParseHead<'_>) -> Result<usize, FromStrError> {
 
 fn parse_int(input: &mut ParseHead<'_>) -> Result<usize, FromStrError> {
     if input.chomp("0").is_ok() {
-        return Ok(0)
+        return Ok(0);
     }
-    let mut count: usize = 
-        input.take(char::is_ascii_digit)?
+    let mut count: usize = input
+        .take(char::is_ascii_digit)?
         .to_digit(10)
-        .ok_or(FromStrError::MalformedInput(input.index))?
-        as usize;
-    
-    while let Some(c) = input.chars().next()
+        .ok_or(FromStrError::MalformedInput(input.index))? as usize;
+    while let Some(c) = input
+        .take(char::is_ascii_digit)
+        .ok()
         .and_then(|c| c.to_digit(10))
-        .map(|c| c as usize)
     {
-        count = count.saturating_mul(10).saturating_add(c);
+        count = count.saturating_mul(10).saturating_add(c as usize);
     }
     Ok(count)
 }
