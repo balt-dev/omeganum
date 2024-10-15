@@ -7,4 +7,4 @@ Cargo.lock
 /cov
 *.profraw
 coverage.*
-!/.github/*
+!/.github/workflows/coverage.yml
