@@ -1305,7 +1305,11 @@ impl core::fmt::Display for FromStrError {
                 write!(f, "can only decode numbers of radix 10 (got {radix})")
             }
             Self::MalformedInput(index) => write!(f, "malformed input at character {index}"),
-        }sstd", feature = "error_in_core", docsrs))]
+        }
+    }
+}
+
+#[cfg(any(feature = "std", feature = "error_in_core", docsrs))]
 impl Error for FromStrError {}
 
 impl Num for OmegaNum {
