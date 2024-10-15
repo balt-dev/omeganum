@@ -7,3 +7,4 @@ Cargo.lock
 /cov
 *.profraw
 coverage.*
+!/.github/*
