@@ -7,6 +7,7 @@ description = "Stores numbers up to 10{N}9e15."
 keywords = ["math", "bignum", "no-std", "port"]
 categories = ["no-std"]
 license = "MIT"
+rust-version = "1.81.0"
 
 [dependencies]
 num-traits = "0.2"

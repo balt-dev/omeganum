@@ -111,7 +111,6 @@ fn test_ops() {
         )
     );
 
-
     assert_eq!(big_l.clone() * small_r.clone(), big_l);
     assert_eq!(small_l.clone() * big_r.clone(), big_r);
     assert_eq!(small_l.clone() * small_r.clone(), small_prod.clone());

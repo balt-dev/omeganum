@@ -1,9 +1,10 @@
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/balt-dev/omeganum/.github%2Fworkflows%2Frust.yml?branch=master&style=flat&label=tests)](https://github.com/balt-dev/omeganum/actions/)
-[![Coverage](https://coveralls.io/repos/github/balt-dev/omeganum/badge.svg?branch=master)](https://coveralls.io/github/balt-dev/omeganum/)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/balt-dev/omeganum/.github%2Fworkflows%2Frust.yml?branch=trunk&style=flat&label=tests)](https://github.com/balt-dev/omeganum/actions/)
+[![Coverage](https://coveralls.io/repos/github/balt-dev/omeganum/badge.svg?branch=trunk)](https://coveralls.io/github/balt-dev/omeganum/)
 [![Documentation](https://docs.rs/omeganum/badge.svg)](https://docs.rs/omeganum)
 [![Repository](https://img.shields.io/badge/-GitHub-%23181717?style=flat&logo=github&labelColor=%23555555&color=%23181717)](https://github.com/balt-dev/omeganum)
+[![MSRV](https://img.shields.io/badge/MSRV-1.81.0-red)](https://gist.github.com/alexheretic/d1e98d8433b602e57f5d0a9637927e0c)
 [![Latest version](https://img.shields.io/crates/v/omeganum.svg)](https://crates.io/crates/omeganum)
-[![License](https://img.shields.io/crates/l/omeganum.svg)](https://github.com/balt-dev/omeganum/blob/master/LICENSE)
+[![License](https://img.shields.io/crates/l/omeganum.svg)](https://github.com/balt-dev/omeganum/blob/trunk/LICENSE)
 [![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](https://github.com/rust-secure-code/safety-dance/)
 
 # OmegaNum.rs

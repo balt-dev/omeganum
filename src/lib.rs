@@ -58,7 +58,11 @@ macro_rules! constant {
         const NUM: f64 = { $expr } as f64;
         const {
             assert!(
-                !(NUM.is_finite() && (NUM < $crate::MIN_SAFE_INTEGER_F || NUM > $crate::MAX_SAFE_INTEGER_F)),
+                !(!(
+                    NUM < f64::MIN ||
+                    NUM > f64::MAX ||
+                    NUM != NUM
+                ) && (NUM < $crate::MIN_SAFE_INTEGER_F || NUM > $crate::MAX_SAFE_INTEGER_F)),
                 "constant omeganum value outside of supported range (non-finite, or 2^53-1 on both ends)"
             );
             $crate::OmegaNum::from_parts(NUM, $crate::EMPTY_ARRAY)
@@ -759,19 +763,19 @@ impl OmegaNum {
 
     #[inline]
     /// Tests whether this is NaN.
-    pub const fn is_nan(&self) -> bool {
+    pub fn is_nan(&self) -> bool {
         self.base.is_nan()
     }
 
     #[inline]
     /// Tests whether this has infinite value.
-    pub const fn is_infinite(&self) -> bool {
+    pub fn is_infinite(&self) -> bool {
         self.base.is_infinite()
     }
 
     #[inline]
     /// Tests whether this is neither NaN nor infinite.
-    pub const fn is_finite(&self) -> bool {
+    pub fn is_finite(&self) -> bool {
         self.base.is_finite()
     }
 
