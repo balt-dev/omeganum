@@ -29,7 +29,7 @@ jobs:
       - name: Run grcov
         env:
           PROJECT_NAME: "omeganum"
-          RUSTFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off"
+          RUSTFLAGS: "-Cinstrument-coverage -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off"
           CARGO_INCREMENTAL: 0
         run: |
           cargo build --verbose
