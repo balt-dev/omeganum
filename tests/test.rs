@@ -12,30 +12,21 @@ fn test_norm() {
 
 #[test]
 fn test_ops() {
-    
-    const TEN_E_TWENTY: OmegaNum = OmegaNum::from_parts(
-        20.0, Cow::Borrowed(&[1.0])
+    const TEN_E_TWENTY: OmegaNum = OmegaNum::from_parts(20.0, Cow::Borrowed(&[1.0]));
+
+    const TEN_E_NINETEEN: OmegaNum = OmegaNum::from_parts(19.0, Cow::Borrowed(&[1.0]));
+
+    assert_eq!(
+        TEN_E_TWENTY + TEN_E_TWENTY,
+        OmegaNum::from_parts(20.30102999566398, Cow::Borrowed(&[1.0]))
     );
-    const TEN_E_NINETEEN: OmegaNum = OmegaNum::from_parts(
-        19.0, Cow::Borrowed(&[1.0])
-    );
-    assert_eq!(TEN_E_TWENTY + TEN_E_TWENTY, OmegaNum::from_parts(
-        20.30102999566398, Cow::Borrowed(&[1.0])
-    ));
-    assert!(
-        OmegaNum::from_parts(
-            1.0,
-            Cow::Borrowed(&[9e15])
-        ).normalized() > TEN_E_TWENTY
-    );
+
+    assert!(OmegaNum::from_parts(1.0, Cow::Borrowed(&[9e15])).normalized() > TEN_E_TWENTY);
 
     let big_l = OmegaNum::from_arrows(2.0, 4);
     assert_eq!(
         big_l.clone(),
-        OmegaNum::from_parts(
-            10_000_000_000.0,
-            Cow::Borrowed(&[8., 8.])
-        ).normalized()
+        OmegaNum::from_parts(10_000_000_000.0, Cow::Borrowed(&[8., 8.])).normalized()
     );
     let big_r = OmegaNum::from_arrows(3.7, 4);
     assert_eq!(
@@ -43,7 +34,8 @@ fn test_ops() {
         OmegaNum::from_parts(
             10_000_000_000.0,
             Cow::Borrowed(&[8., 8., 1.7000000000000002])
-        ).normalized()
+        )
+        .normalized()
     );
 
     let small_l = omeganum::constant!(2.0);
@@ -74,25 +66,34 @@ fn test_ops() {
     assert_eq!(1 - OmegaNum::ZERO, 1);
     assert_eq!(-OmegaNum::ONE - 1, -2);
     assert_eq!(OmegaNum::ONE - -1, 2);
-    assert_eq!(TEN_E_TWENTY * TEN_E_TWENTY, OmegaNum::from_parts(40.0, Cow::Borrowed(&[1.0])));
-    assert_eq!(OmegaNum::from_parts(40.0, Cow::Borrowed(&[1.0])).sqrt(), TEN_E_TWENTY);
+    assert_eq!(
+        TEN_E_TWENTY * TEN_E_TWENTY,
+        OmegaNum::from_parts(40.0, Cow::Borrowed(&[1.0]))
+    );
+    assert_eq!(
+        OmegaNum::from_parts(40.0, Cow::Borrowed(&[1.0])).sqrt(),
+        TEN_E_TWENTY
+    );
 
     assert_eq!(TEN_E_TWENTY - TEN_E_TWENTY, 0);
     assert_eq!(big_l.clone() - big_r.clone(), -big_r.clone());
-    assert_eq!(TEN_E_TWENTY - TEN_E_NINETEEN, OmegaNum::from_parts(
-        19.954242509439325, Cow::Borrowed(&[1.])
-    ));
+    assert_eq!(
+        TEN_E_TWENTY - TEN_E_NINETEEN,
+        OmegaNum::from_parts(19.954242509439325, Cow::Borrowed(&[1.]))
+    );
 
     assert_eq!(OmegaNum::from(2).arrow(0, 3), 6);
     assert_eq!(OmegaNum::from(2).arrow(1, 3), 8);
     assert_eq!(OmegaNum::from(2).arrow(2, 3), 16);
     assert_eq!(OmegaNum::from(2).arrow(3, 3), 65536);
-    assert_eq!(OmegaNum::from(2).arrow(4, 3), OmegaNum::from_parts(
-        19727.780405607016, Cow::Borrowed(&[65532.])
-    ));
-    assert_eq!(OmegaNum::from(2).arrow(5, 3), OmegaNum::from_parts(
-        19727.780405607016, Cow::Borrowed(&[65532., 0., 1.])
-    ));
+    assert_eq!(
+        OmegaNum::from(2).arrow(4, 3),
+        OmegaNum::from_parts(19727.780405607016, Cow::Borrowed(&[65532.]))
+    );
+    assert_eq!(
+        OmegaNum::from(2).arrow(5, 3),
+        OmegaNum::from_parts(19727.780405607016, Cow::Borrowed(&[65532., 0., 1.]))
+    );
     assert_eq!(OmegaNum::from(2).arrow(256, 2), 4);
 
     assert_eq!(OmegaNum::from(-2).arrow(0, 3), -6);
@@ -101,7 +102,10 @@ fn test_ops() {
 
     assert_eq!(OmegaNum::from(50).arrow(5, 0), 1);
     assert_eq!(OmegaNum::from(50).arrow(5, 1), 50);
-    assert_eq!(OmegaNum::from(50).arrow(5, 2), OmegaNum::from(50).arrow(4, 50));
+    assert_eq!(
+        OmegaNum::from(50).arrow(5, 2),
+        OmegaNum::from(50).arrow(4, 50)
+    );
 
     assert_eq!(
         TEN_E_TWENTY.arrow(5, 4e20),
@@ -160,8 +164,11 @@ fn test_ops() {
     assert_eq!(OmegaNum::from(5) % 3, 2);
     assert!((OmegaNum::NAN % 1f64).is_nan());
     assert!((1f64 % OmegaNum::NAN).is_nan());
+
     assert_eq!(TEN_E_TWENTY % 0, 0);
-    assert_eq!(TEN_E_TWENTY % 1, 0);
+    // Clippy complains about modulo 1.
+    // assert_eq!(TEN_E_TWENTY % 1, 0);
+
     assert_eq!(TEN_E_NINETEEN % TEN_E_TWENTY, TEN_E_NINETEEN);
     assert_eq!(-TEN_E_NINETEEN % TEN_E_TWENTY, -TEN_E_NINETEEN);
     assert_eq!(TEN_E_NINETEEN % -TEN_E_TWENTY, -TEN_E_NINETEEN);
@@ -169,42 +176,46 @@ fn test_ops() {
     assert_eq!(TEN_E_TWENTY % 33, 0);
 
     assert_eq!(OmegaNum::ZERO.pow(OmegaNum::ZERO), OmegaNum::ONE);
-    assert_eq!(small_l.clone().pow(small_r.clone()), omeganum::constant!(8.574187700290345));
+    assert_eq!(
+        small_l.clone().pow(small_r.clone()),
+        omeganum::constant!(8.574187700290345)
+    );
     assert_eq!(big_l.clone().pow(big_r.clone()), big_r.clone());
     assert_eq!(big_l.clone().pow(OmegaNum::ZERO), 1);
     assert_eq!(big_l.clone().pow(-OmegaNum::ONE), 0);
     assert_eq!(OmegaNum::INFINITY.pow(OmegaNum::ZERO), 1);
 
-
-
     assert_ne!(omeganum::constant!(10), 0);
     assert_ne!(omeganum::constant!(10), OmegaNum::ZERO);
     assert_eq!(omeganum::constant!(10).log10(), 1);
-    assert_eq!(big_l.clone().exp10(), omeganum::constant!(10).pow(big_l.clone()));
-    assert_eq!(big_l.clone().log10(), big_l.clone().log(omeganum::constant!(10)));
-    
+    assert_eq!(
+        big_l.clone().exp10(),
+        omeganum::constant!(10).pow(big_l.clone())
+    );
+    assert_eq!(
+        big_l.clone().log10(),
+        big_l.clone().log(omeganum::constant!(10))
+    );
+
     assert_eq!(big_l.clone().arrow(5, 1), big_l.clone());
 
     assert!(omeganum::constant!(-1).log10().is_nan());
     assert_eq!(OmegaNum::ZERO.log10(), OmegaNum::NEG_INFINITY);
-
 }
 
 #[test]
 fn test_cmp() {
-    const BIG: OmegaNum = OmegaNum::from_parts(
-        10_000_000_000.0, Cow::Borrowed(&[8.0, 8.0, 1.0])
-    );
-    const BIGGER: OmegaNum = OmegaNum::from_parts(
-        10_000_000_000.0, Cow::Borrowed(&[8.0, 8.0, 1.2])
-    );
-    const BIGGERER: OmegaNum = OmegaNum::from_parts(
-        10_000_000_000.0, Cow::Borrowed(&[8.0, 8.0, 8.0, 1.0])
-    );
-    
+    const BIG: OmegaNum = OmegaNum::from_parts(10_000_000_000.0, Cow::Borrowed(&[8.0, 8.0, 1.0]));
+    const BIGGER: OmegaNum =
+        OmegaNum::from_parts(10_000_000_000.0, Cow::Borrowed(&[8.0, 8.0, 1.2]));
+    const BIGGERER: OmegaNum =
+        OmegaNum::from_parts(10_000_000_000.0, Cow::Borrowed(&[8.0, 8.0, 8.0, 1.0]));
+
     assert!(OmegaNum::NAN != OmegaNum::NAN);
-    assert!(!(OmegaNum::NAN < OmegaNum::NAN));
-    assert!(!(OmegaNum::NAN > OmegaNum::NAN));
+
+    assert!(!(OmegaNum::NAN.lt(&OmegaNum::NAN)));
+    assert!(!(OmegaNum::NAN.gt(&OmegaNum::NAN)));
+
     assert!(OmegaNum::INFINITY == OmegaNum::INFINITY);
     assert!(OmegaNum::ZERO == OmegaNum::ZERO);
     assert!(OmegaNum::ONE == OmegaNum::ONE);
@@ -268,10 +279,19 @@ fn test_parse() {
     assert_eq!("0".parse::<OmegaNum>().unwrap(), 0);
     assert_eq!("17".parse::<OmegaNum>().unwrap(), 17);
     assert_eq!("-13.73".parse::<OmegaNum>().unwrap(), -13.73);
-    assert_eq!("10{5}4.3e9".parse::<OmegaNum>().unwrap(), OmegaNum::from_arrows(4.3e9, 5));
-    assert_eq!("10^^^2".parse::<OmegaNum>().unwrap(), OmegaNum::from_arrows(2., 3));
+    assert_eq!(
+        "10{5}4.3e9".parse::<OmegaNum>().unwrap(),
+        OmegaNum::from_arrows(4.3e9, 5)
+    );
+    assert_eq!(
+        "10^^^2".parse::<OmegaNum>().unwrap(),
+        OmegaNum::from_arrows(2., 3)
+    );
     assert_eq!("Infinity".parse::<OmegaNum>().unwrap(), OmegaNum::INFINITY);
-    assert_eq!("-Infinity".parse::<OmegaNum>().unwrap(), OmegaNum::NEG_INFINITY);
+    assert_eq!(
+        "-Infinity".parse::<OmegaNum>().unwrap(),
+        OmegaNum::NEG_INFINITY
+    );
     assert!("NaN".parse::<OmegaNum>().unwrap().is_nan());
     assert!("".parse::<OmegaNum>().is_err());
     assert!("Na".parse::<OmegaNum>().is_err());
@@ -287,4 +307,18 @@ fn test_parse() {
     assert!("10{1}4e+".parse::<OmegaNum>().is_err());
     assert!("10{1}4e05".parse::<OmegaNum>().is_err());
     assert!("10^^^e9".parse::<OmegaNum>().is_err());
+}
+
+#[test]
+fn test_base_and_array() {
+    let sample = OmegaNum::from_parts(7.13973, Cow::Borrowed(&[]));
+
+    assert_eq!(sample.base(), 7.13973);
+    assert_eq!(sample.array(), &[] as &[f64]);
+    assert_eq!(OmegaNum::ONE, 1.);
+    assert_eq!(OmegaNum::ZERO, 0.);
+
+    let big_sample = OmegaNum::from_parts(4.1329841, Cow::Borrowed(&[3., 3., 1.]));
+    assert_eq!(big_sample.base(), 4.1329841);
+    assert_eq!(big_sample.array(), &[3., 3., 1.]);
 }

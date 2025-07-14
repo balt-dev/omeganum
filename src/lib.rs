@@ -7,10 +7,7 @@
 #[cfg(not(any(feature = "std", feature = "libm")))]
 compile_error!("either libm or the standard library must be included to use omeganum");
 
-
-
 use core::{cmp::Ordering, fmt, ops::*, str::FromStr};
-
 
 /// Re-export of [`num_traits`] for convenience.
 pub use num_traits;
@@ -41,7 +38,7 @@ pub struct OmegaNum {
 ///
 /// You should use this when you need a constant value of specifically type [`OmegaNum`].
 /// If the context you're using this in doesn't demand that, it's likely more clear to coerce from a primitive.
-/// 
+///
 /// # Errors
 /// Will cause a compiler error if the given value would require an allocation.
 ///
@@ -197,7 +194,7 @@ macro_rules! forward_from {
                 OmegaNum::from(*self).eq(other)
             }
         }
-        
+
         impl PartialOrd<$ty> for OmegaNum {
             fn partial_cmp(&self, other: &$ty) -> Option<Ordering> {
                 self.partial_cmp(&(Self::from(*other)))
@@ -213,10 +210,11 @@ macro_rules! forward_from {
 }
 
 forward_from! {
-    f64, @From f32, 
-    @From i8, @From i16, @From i32, @From i64, @From i128, 
+    f64, @From f32,
+    @From i8, @From i16, @From i32, @From i64, @From i128,
     @From u8, @From u16, @From u32, @From u64, @From u128
 }
+
 #[cfg(feature = "f16")]
 forward_from! { @From f16 }
 
@@ -243,8 +241,8 @@ impl PartialOrd for OmegaNum {
         }
 
         match self.base.signum().partial_cmp(&other.base.signum()) {
-            Some(Ordering::Equal) => {},
-            other => return other
+            Some(Ordering::Equal) => {}
+            other => return other,
         }
 
         if self.array.len() != array.len() {
@@ -360,35 +358,43 @@ impl SubAssign for OmegaNum {
         if self.is_nan() {
             return;
         }
+
         if other.is_nan() {
             *self = Self::NAN;
             return;
         }
+
         if self.is_infinite() {
             if other.is_infinite() && self.is_negative() == other.is_negative() {
                 *self = Self::NAN;
             }
             return;
         }
+
         if other.is_infinite() {
             *self = -other;
             return;
         }
+
         if other == Self::ZERO {
             return;
         }
+
         if *self == Self::ZERO {
             *self = -other;
             return;
         }
+
         if *self == other {
             *self = Self::ZERO;
             return;
         }
+
         if other.is_negative() {
             *self += -other;
             return;
         }
+
         if self.is_negative() {
             self.negate();
             *self += other;
@@ -570,7 +576,6 @@ impl RemAssign for OmegaNum {
     }
 }
 
-
 macro_rules! forward_binop_impl {
     (
         $($impl_assign_name: ident: $assign_name: ident, $impl_name: ident: $name: ident;)+
@@ -633,6 +638,7 @@ forward_binop_impl! {
         f64, f32, u8, u16, u32, u64, u128, i8, i16, i32, i64, i128
     )
 }
+
 #[cfg(feature = "f16")]
 forward_binop_impl! { @impls AddAssign: add_assign, Add: add; f16 }
 #[cfg(feature = "f16")]
@@ -643,7 +649,6 @@ forward_binop_impl! { @impls MulAssign: mul_assign, Mul: mul; f16 }
 forward_binop_impl! { @impls DivAssign: div_assign, Div: div; f16 }
 #[cfg(feature = "f16")]
 forward_binop_impl! { @impls RemAssign: rem_assign, Rem: rem; f16 }
-
 
 impl OmegaNum {
     /// Euler's constant.
@@ -725,11 +730,23 @@ impl OmegaNum {
     }
 
     #[inline]
+    /// Gets the base of the number.
+    pub fn base(&self) -> f64 {
+        self.base
+    }
+
+    #[inline]
+    /// Gets the array of the number.
+    pub fn array(&self) -> &[f64] {
+        &self.array
+    }
+
+    #[inline]
     /// Constructs an OmegaNum from a base and array.
     ///
     /// # Note
     /// If not already normalized, you _must_ call `OmegaNum::normalize` on the return value of this function.
-    /// 
+    ///
     /// Failure to call this will cause incorrect (although not undefined) behavior.
     pub const fn from_parts(base: f64, array: Cow<'static, [f64]>) -> Self {
         Self { base, array }
@@ -780,7 +797,7 @@ impl OmegaNum {
     }
 
     #[inline]
-    /// Returns whether this number's array is empty - 
+    /// Returns whether this number's array is empty -
     /// that is, whether the value can be stored in an [`f64`] without loss of precision.
     pub fn is_simple(&self) -> bool {
         self.array.is_empty()
@@ -793,7 +810,7 @@ impl OmegaNum {
     }
 
     #[inline]
-    /// Returns the largest integer &leq; this number. 
+    /// Returns the largest integer &leq; this number.
     pub fn floor(self) -> Self {
         if self.is_integer() {
             return self;
@@ -854,7 +871,7 @@ impl OmegaNum {
 
     #[inline]
     /// Returns whether this number is positive.
-    /// 
+    ///
     /// # Note
     /// This function will return a non-deterministic value for [`Self::NAN`].
     pub fn is_positive(&self) -> bool {
@@ -863,7 +880,7 @@ impl OmegaNum {
 
     #[inline]
     /// Returns whether this number is negative.
-    /// 
+    ///
     /// # Note
     /// This function will return a non-deterministic value for [`Self::NAN`].
     pub fn is_negative(&self) -> bool {
@@ -980,13 +997,13 @@ impl OmegaNum {
     }
 
     #[inline]
-    /// Returns Euler's constant raised to the power of this number. 
+    /// Returns Euler's constant raised to the power of this number.
     pub fn exp(self) -> Self {
         Self::E.pow(self)
     }
 
     /// Returns 10 raised to the power of this number.
-    /// 
+    ///
     /// All other exponential functions are implemented in terms of this one.
     pub fn exp10(mut self) -> Self {
         if self == Self::NAN {
@@ -1019,7 +1036,7 @@ impl OmegaNum {
     }
 
     /// Returns the number so that 10<sup>x</sup> = this number.
-    /// 
+    ///
     /// All other logarithmic functions are implemented in terms of this one.
     pub fn log10(mut self) -> Self {
         if !self.is_finite() {
@@ -1028,7 +1045,7 @@ impl OmegaNum {
             }
             return self;
         }
-        
+
         let ord = self.partial_cmp(&Self::ZERO).unwrap_or(Ordering::Less);
         // Unwrapping a partial comparison that gives back None will lead this to return NaN, which is what is expected.
         match ord {
@@ -1150,8 +1167,8 @@ impl OmegaNum {
     }
 
     /// Evaluates `{N}` between two values - i.e, `self {N} other`.
-    /// 
-    /// For example, `{2}` would be `self` &uarr;&uarr; `other`, 
+    ///
+    /// For example, `{2}` would be `self` &uarr;&uarr; `other`,
     /// or for `other == 4`, <code>self</code><sup><code>self</code><sup><code>self</code><sup><code>self</code></sup></sup></sup>.
     ///
     /// # Performance warning
@@ -1169,7 +1186,7 @@ impl OmegaNum {
     pub fn arrow(self, arrows: usize, other: impl Into<Self>) -> Self {
         self.arrow_(arrows, other.into())
     }
-    
+
     fn arrow_(self, arrows: usize, other: Self) -> Self {
         if self.is_nan() || other.is_nan() {
             return Self::NAN;
@@ -1218,10 +1235,7 @@ impl OmegaNum {
                     if len < arrows {
                         sum.array
                             .to_mut()
-                            .extend(
-                                core::iter::repeat(0.0)
-                                .take(arrows - len)
-                            );
+                            .extend(core::iter::repeat(0.0).take(arrows - len));
                     }
                     sum.array.to_mut()[arrows - 1] += 1.0;
                     return sum.normalized();
