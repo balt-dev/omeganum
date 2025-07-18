@@ -25,8 +25,8 @@ This crate supports `#![no-std]`.
 - `libm`: Required without `std` enabled for math
 - `serde`: Enables support for `serde::Serialize` and `serde::Deserialize`
 - `f16`: Enables support for converting from the experimental `f16` type
+- `f128`: Enables support for converting from the experimental `f128` type
 
-An `f128` feature is planned for when that type gains the necessary method `log10`.
 
 [^1]: in Rust version 1.81.0
 

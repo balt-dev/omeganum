@@ -9,7 +9,7 @@
     name          = "omeganum"
     repository    = "https://github.com/balt-dev/omeganum"
     rust-version  = "1.81.0"
-    version       = "1.0.2"
+    version       = "1.0.3"
 
 [dependencies]
     libm       = { version = "0.2", optional = true }
