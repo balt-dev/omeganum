@@ -3,6 +3,7 @@
 #![forbid(unsafe_code)]
 #![no_std]
 #![cfg_attr(feature = "f16", feature(f16))]
+#![cfg_attr(feature = "f128", feature(f128))]
 
 #[cfg(not(any(feature = "std", feature = "libm")))]
 compile_error!("either libm or the standard library must be included to use omeganum");
@@ -217,6 +218,9 @@ forward_from! {
 
 #[cfg(feature = "f16")]
 forward_from! { @From f16 }
+
+#[cfg(feature = "f128")]
+forward_from! { @From f128 }
 
 impl PartialOrd for OmegaNum {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -649,6 +653,18 @@ forward_binop_impl! { @impls MulAssign: mul_assign, Mul: mul; f16 }
 forward_binop_impl! { @impls DivAssign: div_assign, Div: div; f16 }
 #[cfg(feature = "f16")]
 forward_binop_impl! { @impls RemAssign: rem_assign, Rem: rem; f16 }
+
+
+#[cfg(feature = "f128")]
+forward_binop_impl! { @impls AddAssign: add_assign, Add: add; f128 }
+#[cfg(feature = "f128")]
+forward_binop_impl! { @impls SubAssign: sub_assign, Sub: sub; f128 }
+#[cfg(feature = "f128")]
+forward_binop_impl! { @impls MulAssign: mul_assign, Mul: mul; f128 }
+#[cfg(feature = "f128")]
+forward_binop_impl! { @impls DivAssign: div_assign, Div: div; f128 }
+#[cfg(feature = "f128")]
+forward_binop_impl! { @impls RemAssign: rem_assign, Rem: rem; f128 }
 
 impl OmegaNum {
     /// Euler's constant.

@@ -20,6 +20,7 @@
     default       = ["std"]
     error_in_core = []
     f16           = []
+    f128           = []
     libm          = ["dep:libm", "num-traits/libm"]
     serde         = ["dep:serde", "std"]
     std           = []
